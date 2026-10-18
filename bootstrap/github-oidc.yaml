@@ -40,7 +40,17 @@ Resources:
               StringEquals:
                 token.actions.githubusercontent.com:aud: sts.amazonaws.com
               StringLike:
-                token.actions.githubusercontent.com:sub: !Sub repo:${GitHubRepo}:ref:refs/heads/main
+                token.actions.githubusercontent.com:sub:
+                  # legacy format
+                  - !Sub repo:${GitHubRepo}:ref:refs/heads/main
+                  # newer format that includes immutable owner/repo IDs: repo:owner@<id>/repo@<id>:ref:...
+                  - !Join
+                    - ''
+                    - - 'repo:'
+                      - !Select [0, !Split ['/', !Ref GitHubRepo]]
+                      - '@*/'
+                      - !Select [1, !Split ['/', !Ref GitHubRepo]]
+                      - '@*:ref:refs/heads/main'
       # Broad for simplicity (SAM creates IAM roles, Lambda, API GW, alarms, dashboards).
       # Tighten before using for anything beyond this demo.
       ManagedPolicyArns:
