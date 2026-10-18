@@ -69,3 +69,35 @@ jobs:
             --query "Stacks[0].Outputs[?OutputKey=='ApiUrl'].OutputValue" --output text)
           echo "API: $URL"
           curl -fsS "$URL"
+
+      - name: Email on success
+        if: success()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.GMAIL_USERNAME }}
+          password: ${{ secrets.GMAIL_APP_PASSWORD }}
+          to: ${{ vars.NOTIFY_EMAILS }}
+          from: claudWatch CI <${{ secrets.GMAIL_USERNAME }}>
+          subject: "✅ claudWatch deployed (${{ github.sha }})"
+          body: |
+            Deployment succeeded.
+            Commit: ${{ github.event.head_commit.message }}
+            By: ${{ github.actor }}
+            Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      - name: Email on failure
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.GMAIL_USERNAME }}
+          password: ${{ secrets.GMAIL_APP_PASSWORD }}
+          to: ${{ vars.NOTIFY_EMAILS }}
+          from: claudWatch CI <${{ secrets.GMAIL_USERNAME }}>
+          subject: "❌ claudWatch deploy FAILED"
+          body: "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

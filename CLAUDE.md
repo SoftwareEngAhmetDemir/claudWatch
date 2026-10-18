@@ -26,6 +26,10 @@ Deploys automatically from GitHub Actions on every push / merge to `main`.
 - Variable `ALARM_EMAIL` (optional). Not set, so alarm emails are not sent. If set, AWS sends a
   confirmation email that must be clicked.
 
+- Deploy emails (sent by the last workflow steps via Gmail SMTP): secrets `GMAIL_USERNAME` and
+  `GMAIL_APP_PASSWORD` (a Google App Password), variable `NOTIFY_EMAILS` (comma-separated recipients).
+  If these are not set, the email steps fail (after the deploy has already succeeded).
+
 ## CloudFormation stacks
 1. `claudwatch-github-oidc` (one-time bootstrap, template `bootstrap/github-oidc.yaml`)
    - Created in the console with parameters `GitHubRepo=SoftwareEngAhmetDemir/claudWatch`, `CreateProvider=false`.
