@@ -1,0 +1,16 @@
+{
+  "name": "claudwatch-api",
+  "version": "1.0.0",
+  "description": "Hello World Express API deployed to AWS Lambda with CloudWatch monitoring",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "deploy": "sam build && sam deploy --guided"
+  },
+  "engines": { "node": ">=20" },
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2",
+    "serverless-http": "^3.2.0"
+  }
+}
