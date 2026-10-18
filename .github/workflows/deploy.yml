@@ -47,14 +47,21 @@ jobs:
 
       - run: sam build
 
-      - run: |
+      - name: Deploy
+        env:
+          ALARM_EMAIL: ${{ vars.ALARM_EMAIL }}
+        run: |
+          ARGS=()
+          if [ -n "$ALARM_EMAIL" ]; then
+            ARGS=(--parameter-overrides "AlarmEmail=$ALARM_EMAIL")
+          fi
           sam deploy \
             --stack-name "$STACK_NAME" \
             --resolve-s3 \
             --capabilities CAPABILITY_IAM \
             --no-confirm-changeset \
             --no-fail-on-empty-changeset \
-            --parameter-overrides AlarmEmail="${{ vars.ALARM_EMAIL }}"
+            "${ARGS[@]}"
 
       - name: Smoke test
         run: |
